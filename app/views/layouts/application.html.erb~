@@ -11,7 +11,7 @@
 	 </header>
 	 <section class="round">
 		<%= yield %>
-		<%= link_to "Sign up now!", '#', :class => "signup_button round" %>
+		<%= link_to "Sign up now!", sign_up_path, :class => "signup_button round" %>
 	 </section>
 	<footer>
 		<%= render 'layouts/footer' %>
