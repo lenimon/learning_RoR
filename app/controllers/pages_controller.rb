@@ -10,4 +10,8 @@ class PagesController < ApplicationController
   def about
     @title="dynamic about variable"
   end
+
+  def help
+    @title="dynamic help variable"
+  end
 end
