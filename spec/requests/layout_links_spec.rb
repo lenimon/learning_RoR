@@ -20,5 +20,17 @@ describe "LayoutLinks" do
 	  get '/sign_up'
 	  response.should have_selector('title', :content => "Sign Up")
 	end
+
+	it "should have the right links to click" do
+	  visit root_path
+	  click_link "About"
+	  response.should have_selector("title", :content=>"dynamic about variable")
+	  click_link "Contact"
+	  response.should have_selector("title", :content=>"dynamic contact variable")
+	  click_link "Help"
+	  response.should have_selector("title", :content=>"dynamic help variable")
+	  click_link "Sign Up"
+	  response.should have_selector("title", :content=>"Sign Up")
+	end
 end
 
