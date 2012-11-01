@@ -2,19 +2,24 @@
 #
 # Table name: users
 #
-#  id         :integer          not null, primary key
-#  name       :string(255)
-#  email      :string(255)
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
+#  id                 :integer          not null, primary key
+#  name               :string(255)
+#  email              :string(255)
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
 #
 
 require 'spec_helper'
 
 describe User do
   before(:each){
-    @attr = {:name=>'example',:email=>'example@mail.com'}
+    @attr = {:name=>'example',:email=>'example@mail.com',:password=>'test_password', :password_confirmation=>'test_password'}
   }
+  describe "User model factory" do
+    it "has a valid factory" do
+      FactoryGirl.create(:user).should be_valid
+    end
+  end
   it 'should create a new user instance provided valid attributes' do
     User.create!(@attr)
   end
@@ -55,5 +60,54 @@ describe User do
     User.create!(@attr.merge(:email=>@attr[:email].upcase))
     user = User.new(@attr)
     user.should_not be_valid
+  end
+  it 'should have password and confirmation filled' do
+    user = User.create!(@attr.merge(:password=>'',:password_confirmation=>''))
+    user.should_not be_valid
+  end
+  it 'should have matching password and password_confirmation' do
+    User.create!(@attr.merge(:password_confirmation=>'some_other_password')).should_not be_valid
+  end
+  it 'should reject very short passwords' do
+    short_pass = 'a'*5
+    User.create!(@attr.merge(:password=>short_pass,:password_confirmation=>short_pass)).should_not be_valid
+  end
+  it 'should reject very long passwords' do
+    very_long_pass = 'a'*50
+    User.create!(@attr.merge(:password=>very_long_pass,:password_confirmation=>very_long_pass)).should_not be_valid
+  end
+
+  describe "password encryption" do
+    before(:each) do
+      @user = User.create!(@attr)
+    end
+    it "should have an encrypted password attribute" do
+      @user.should respond_to(:encrypted_password)
+    end
+    it 'password should not be blank' do
+      @user.encrypted_password.should_not be_blank
+    end
+    describe "has_password? method check" do
+      it "matching password should pass" do
+        @user.has_password?(@attr[:password]).should be_true
+      end
+      it "non matching password should not pass" do
+        @user.has_password?('invalid').should be_false
+      end
+    end
+    describe "authenticate method check" do
+      it 'should return nil for email/password mismatch'do
+        wrong_password_user = User.authenticate(@attr[:email],'wrongpassword')
+        wrong_password_user.should be_nil
+      end
+      it 'should return nil for non existant user'do
+        wrong_user = User.authenticate('wrong@user.com',@attr[:password])
+        wrong_user.should be_nil
+      end
+      it 'should return user for valid email/password combination'do
+        valid_user = User.authenticate(@attr[:email],@attr[:password])
+        valid_user.should == @user
+      end
+    end
   end
 end
