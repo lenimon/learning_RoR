@@ -26,8 +26,7 @@ before_save :encrypt_password
 
   def self.authenticate(submitted_email,submitted_password)
     found_user = find_by_email(submitted_email)
-    return nil if found_user.nil?
-    return found_user if found_user.has_password?(submitted_password)
+    user && user.has_password?(submitted_password)? user : nil
   end
 
   private  
