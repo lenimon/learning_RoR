@@ -26,7 +26,11 @@ before_save :encrypt_password
 
   def self.authenticate(submitted_email,submitted_password)
     found_user = find_by_email(submitted_email)
-    user && user.has_password?(submitted_password)? user:nil
+    found_user && found_user.has_password?(submitted_password)? found_user : nil
+  end
+  def self.authenticate_with_salt(id,salt)
+    found_user = find_by_id(id)
+    (found_user && found_user.salt==salt) ? found_user : nil
   end
 
   private  

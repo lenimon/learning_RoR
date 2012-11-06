@@ -13,7 +13,7 @@ require 'spec_helper'
 
 describe User do
   before(:each){
-    @attr = {:name=>'example',:email=>'example@mail.com',:password=>'test_password', :password_confirmation=>'test_password'}
+    @attr = {:name=>'examples',:email=>'examples@mail.com',:password=>'testpassword', :password_confirmation=>'testpassword'}
   }
   describe "User model factory" do
     it "has a valid factory" do
@@ -62,19 +62,21 @@ describe User do
     user.should_not be_valid
   end
   it 'should have password and confirmation filled' do
-    user = User.create!(@attr.merge(:password=>'',:password_confirmation=>''))
+    user = User.new(@attr.merge(:password=>'',:password_confirmation=>''))
     user.should_not be_valid
   end
   it 'should have matching password and password_confirmation' do
-    User.create!(@attr.merge(:password_confirmation=>'some_other_password')).should_not be_valid
+    User.create!(@attr.merge(:password_confirmation=>'someotherpassword')).should_not be_valid
   end
   it 'should reject very short passwords' do
-    short_pass = 'a'*5
-    User.create!(@attr.merge(:password=>short_pass,:password_confirmation=>short_pass)).should_not be_valid
+    shortPass = 'a'*5
+    user = User.new(@attr.merge(:password=>shortPass,:password_confirmation=>shortPass))
+    user.should_not be_valid
   end
   it 'should reject very long passwords' do
-    very_long_pass = 'a'*50
-    User.create!(@attr.merge(:password=>very_long_pass,:password_confirmation=>very_long_pass)).should_not be_valid
+    longPass = 'a'*41
+    user = User.new(@attr.merge(:password=>longPass,:password_confirmation=>longPass))
+    user.should_not be_valid
   end
 
   describe "password encryption" do
