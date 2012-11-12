@@ -41,10 +41,7 @@ describe "LayoutLinks" do
         describe "When user is signed in" do
           before(:each) do
             @user = FactoryGirl.create(:user)
-            visit sign_in_path
-            fill_in :email, :with=>@user.email
-            fill_in :password, :with=>@user.password
-            click_button
+            integration_sign_in(@user)
           end
           it "should have sign out link" do
             visit root_path

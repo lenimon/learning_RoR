@@ -115,4 +115,10 @@ RSpec.configure do |config|
   def test_sign_in(user)
     controller.sign_in(user)
   end
+  def integration_sign_in(user)
+    visit sign_in_path
+    fill_in :email, user.email
+    fill_in :password, user.password
+    click_button
+  end
 end

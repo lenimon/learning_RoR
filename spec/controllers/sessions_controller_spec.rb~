@@ -41,7 +41,7 @@ render_views
         response.should redirect_to(user_path(@user))
       end
     end
-    describe "should destroying current_user session"
+    describe "should destroying current_user session" do
       it "should sign user out" do
         test_sign_in(FactoryGirl.create(:user))
         delete :destroy
